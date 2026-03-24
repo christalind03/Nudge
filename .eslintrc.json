@@ -13,5 +13,13 @@
     "plugin:import/typescript",
     "plugin:perfectionist/recommended-natural-legacy"
   ],
-  "parser": "@typescript-eslint/parser"
+  "parser": "@typescript-eslint/parser",
+  "settings": {
+    "import/resolver": {
+      "node": {
+        "moduleDirectory": ["node_modules"]
+      },
+      "typescript": {}
+    }
+  }
 }
