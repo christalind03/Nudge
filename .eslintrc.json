@@ -13,6 +13,7 @@
     "plugin:import/typescript",
     "plugin:perfectionist/recommended-natural-legacy"
   ],
+  "ignorePatterns": [".idea", ".vite", "dist", "node_modules"],
   "parser": "@typescript-eslint/parser",
   "settings": {
     "import/resolver": {

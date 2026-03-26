@@ -1,14 +1,43 @@
-import { Fragment } from 'react';
+import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
+import { createMemoryRouter, RouterProvider } from 'react-router-dom';
 
 import './index.css';
+import { Layout } from '@/components/Layout';
+import { Blocks } from '@/routes/Blocks';
+import { Dashboard } from '@/routes/Dashboard';
+import { Reminders } from '@/routes/Reminders';
+import { Settings } from '@/routes/Settings';
+
+const memoryRouter = createMemoryRouter([
+  {
+    children: [
+      {
+        element: <Dashboard />,
+        path: '/',
+      },
+      {
+        element: <Blocks />,
+        path: '/blocks/:blockID',
+      },
+      {
+        element: <Reminders />,
+        path: '/reminders',
+      },
+      {
+        element: <Settings />,
+        path: '/settings',
+      },
+    ],
+    element: <Layout />,
+  },
+]);
 
 function App() {
   return (
-    <Fragment>
-      <h1>💖 Hello World!</h1>
-      <p>Welcome to your Electron application.</p>
-    </Fragment>
+    <StrictMode>
+      <RouterProvider router={memoryRouter} />
+    </StrictMode>
   );
 }
 
