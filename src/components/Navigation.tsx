@@ -5,9 +5,18 @@ import {
   Plus,
   Settings,
 } from 'lucide-react';
+import { useState } from 'react';
 
+import { BlockForm } from '@/components/forms/BlockForm';
+import { ReminderForm } from '@/components/forms/ReminderForm';
 import { NavigationRoute } from '@/components/NavigationRoute';
-import { Dialog, DialogContent, DialogTrigger } from '@/components/ui/Dialog';
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from '@/components/ui/Dialog';
 import { ScrollArea } from '@/components/ui/ScrollArea';
 import { Separator } from '@/components/ui/Separator';
 import {
@@ -23,6 +32,8 @@ import {
 } from '@/components/ui/Sidebar';
 
 export function Navigation() {
+  const [dialogOpen, setDialogOpen] = useState(false);
+
   return (
     <Sidebar>
       <SidebarHeader>
@@ -50,16 +61,26 @@ export function Navigation() {
         </SidebarMenu>
         <SidebarGroup className="flex flex-col min-h-0">
           <SidebarGroupLabel>Time Blocks</SidebarGroupLabel>
-          <SidebarGroupAction className="hover:cursor-pointer">
-            <Dialog>
-              <DialogContent>Dialog Content</DialogContent>
-              <DialogTrigger asChild>
-                <div>
-                  <Plus className="size-3 text-accent-foreground" />
-                </div>
-              </DialogTrigger>
-            </Dialog>
+          <SidebarGroupAction
+            asChild
+            className="hover:cursor-pointer"
+            onClick={() => setDialogOpen(true)}
+          >
+            <Plus className="size-3 text-accent-foreground" />
           </SidebarGroupAction>
+          <Dialog onOpenChange={setDialogOpen} open={dialogOpen}>
+            <DialogContent>
+              <DialogHeader>
+                <DialogTitle>Create Reminder Block</DialogTitle>
+                <DialogDescription>
+                  Configure a schedule and time window for certain reminders.
+                </DialogDescription>
+              </DialogHeader>
+              <Separator />
+              {/*<BlockForm onSubmit={() => setDialogOpen(false)} />*/}
+              <ReminderForm onSubmit={() => setDialogOpen(false)} />
+            </DialogContent>
+          </Dialog>
           <SidebarGroupContent className="flex flex-col min-h-0">
             <SidebarMenu className="border-l-2 border-solid flex flex-col min-h-0 ml-2.5 pl-1">
               <ScrollArea className="h-full" scrollHideDelay={0}>
