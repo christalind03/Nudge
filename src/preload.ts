@@ -1,2 +1,16 @@
-// See the Electron documentation for details on how to use preload scripts:
-// https://www.electronjs.org/docs/latest/tutorial/process-model#preload-scripts
+import { contextBridge, ipcRenderer } from 'electron';
+
+import { FormBlock } from '@/database/types';
+
+const databaseAPI = {
+  deleteBlock: (blockID: string) =>
+    ipcRenderer.invoke('blocks:delete', blockID),
+  insertBlock: (blockData: FormBlock) =>
+    ipcRenderer.invoke('blocks:insert', blockData),
+  readBlock: (blockID: string) => ipcRenderer.invoke('blocks:read', blockID),
+  readBlocks: () => ipcRenderer.invoke('blocks:readAll'),
+  updateBlocks: (blockID: string, blockData: FormBlock) =>
+    ipcRenderer.invoke('blocks:update', blockID, blockData),
+};
+
+contextBridge.exposeInMainWorld('databaseAPI', databaseAPI);

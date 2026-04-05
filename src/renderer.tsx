@@ -1,6 +1,7 @@
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 import { createMemoryRouter, RouterProvider } from 'react-router-dom';
+import { Toaster } from 'sonner';
 
 import './index.css';
 import { Layout } from '@/components/Layout';
@@ -37,6 +38,7 @@ function App() {
   return (
     <StrictMode>
       <RouterProvider router={memoryRouter} />
+      <Toaster />
     </StrictMode>
   );
 }

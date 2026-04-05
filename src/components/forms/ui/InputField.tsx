@@ -34,7 +34,7 @@ export function InputField<TFieldValues extends FieldValues>({
             id={field.name}
             onChange={(changeEvent) => {
               field.onChange(changeEvent);
-              inputProps.onChange(changeEvent);
+              inputProps.onChange?.(changeEvent);
             }}
           />
           {fieldState.invalid && <FieldError errors={[fieldState.error]} />}

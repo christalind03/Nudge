@@ -7,7 +7,7 @@ import { REQUIRED_MESSAGE } from '@/components/forms/constants';
 const hoursSchema = z.number().min(0).max(23);
 const minutesSchema = z.number().min(0).max(59);
 
-const repeatDefaults = {
+export const repeatDefaults = {
   repeatCron: {
     repeatData: {
       cronExpression: '',
@@ -125,7 +125,7 @@ const repeatSchema = z.discriminatedUnion('repeatType', [
   }),
 ]);
 
-const reminderDefaults = {
+export const reminderDefaults = {
   reminderOnce: {
     reminderData: {
       date: format(new Date(), 'yyyy-MM-dd'),
@@ -161,12 +161,10 @@ const reminderSchema = z.discriminatedUnion('reminderType', [
   }),
 ]);
 
-const formSchema = z
+export const formSchema = z
   .object({
     label: z.string().nonempty({ message: REQUIRED_MESSAGE }),
   })
   .and(reminderSchema);
 
-type FormSchema = z.infer<typeof formSchema>;
-
-export { formSchema, FormSchema, reminderDefaults, repeatDefaults };
+export type FormSchema = z.infer<typeof formSchema>;

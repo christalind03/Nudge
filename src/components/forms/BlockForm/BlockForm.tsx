@@ -9,6 +9,8 @@ import {
 import { InputField } from '@/components/forms/ui/InputField';
 import { WeekdayField } from '@/components/forms/ui/WeekdayField';
 import { Button } from '@/components/ui/Button';
+import { toast } from '@/components/ui/Toast';
+import { isFormBlock } from '@/database/types';
 
 type Props = {
   onSubmit: () => void;
@@ -20,9 +22,27 @@ export function BlockForm({ onSubmit }: Props) {
     resolver: zodResolver(formSchema),
   });
 
-  function handleSubmit(formData: FormSchema) {
-    console.log(formData);
-    onSubmit();
+  async function handleSubmit(formData: FormSchema) {
+    if (!isFormBlock(formData)) {
+      return;
+    }
+
+    const queryResult = await window.databaseAPI.insertBlock(formData);
+    if (queryResult.success) {
+      toast({
+        toastTitle: `Block "${formData.name}" Created`,
+        toastVariant: 'success',
+      });
+
+      onSubmit();
+      return;
+    }
+
+    toast({
+      toastDescription: queryResult.message,
+      toastTitle: 'Block Creation Failed',
+      toastVariant: 'error',
+    });
   }
 
   return (

@@ -77,8 +77,8 @@ export function Navigation() {
                 </DialogDescription>
               </DialogHeader>
               <Separator />
-              {/*<BlockForm onSubmit={() => setDialogOpen(false)} />*/}
-              <ReminderForm onSubmit={() => setDialogOpen(false)} />
+              <BlockForm onSubmit={() => setDialogOpen(false)} />
+              {/*<ReminderForm onSubmit={() => setDialogOpen(false)} />*/}
             </DialogContent>
           </Dialog>
           <SidebarGroupContent className="flex flex-col min-h-0">
