@@ -23,38 +23,29 @@ class AppDatabase {
   }
 
   public deleteBlock(blockID: string) {
-    try {
-      this.localDatabase
-        .prepare('DELETE FROM blocks WHERE id = ?')
-        .run(blockID);
+    const queryResult = this.localDatabase
+      .prepare('DELETE FROM blocks WHERE id = ?')
+      .run(blockID);
 
-      return this.queryResult();
-    } catch (errorObj) {
-      return this.queryResult(errorObj);
-    }
+    return 0 < queryResult.changes;
   }
 
   public insertBlock(blockData: FormBlock) {
-    try {
-      const id = randomUUID();
-
-      this.localDatabase
-        .prepare(
-          `
-          INSERT INTO blocks (id, name, active_days, time_start, time_end)
-          VALUES (@id, @name, @activeDays, @timeStart, @timeEnd)
+    const id = randomUUID();
+    const queryResult = this.localDatabase
+      .prepare(
         `
-        )
-        .run({
-          id,
-          ...blockData,
-          activeDays: JSON.stringify(blockData.activeDays),
-        });
+        INSERT INTO blocks (id, name, active_days, time_start, time_end)
+        VALUES (@id, @name, @activeDays, @timeStart, @timeEnd)
+      `
+      )
+      .run({
+        id,
+        ...blockData,
+        activeDays: JSON.stringify(blockData.activeDays),
+      });
 
-      return this.queryResult();
-    } catch (errorObj) {
-      return this.queryResult(errorObj);
-    }
+    return 0 < queryResult.changes;
   }
 
   public readBlock(blockID: string) {
@@ -86,26 +77,22 @@ class AppDatabase {
   }
 
   public updateBlock(blockID: string, blockData: FormBlock) {
-    try {
-      this.localDatabase
-        .prepare(
-          `
-          UPDATE blocks SET name = ?, active_days = ?, time_start = ?, time_end = ?
-          WHERE id = ?
+    const queryResult = this.localDatabase
+      .prepare(
         `
-        )
-        .run(
-          blockData.name,
-          blockData.activeDays,
-          blockData.timeStart,
-          blockData.timeEnd,
-          blockID
-        );
+        UPDATE blocks SET name = ?, active_days = ?, time_start = ?, time_end = ?
+        WHERE id = ?
+      `
+      )
+      .run(
+        blockData.name,
+        blockData.activeDays,
+        blockData.timeStart,
+        blockData.timeEnd,
+        blockID
+      );
 
-      return this.queryResult();
-    } catch (errorObj) {
-      return this.queryResult(errorObj);
-    }
+    return 0 < queryResult.changes;
   }
 
   private initDatabase() {
@@ -118,17 +105,6 @@ class AppDatabase {
         time_end TEXT NOT NULL
       );
     `);
-  }
-
-  private queryResult(errorObj?: unknown) {
-    if (errorObj) {
-      return {
-        message: errorObj instanceof Error ? errorObj.message : errorObj,
-        success: false,
-      };
-    }
-
-    return { success: true };
   }
 }
 

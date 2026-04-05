@@ -10,11 +10,6 @@ export type DatabaseBlock = {
 
 export type FormBlock = Omit<Block, 'id'>;
 
-export type QueryResult = {
-  message: string;
-  success: boolean;
-};
-
 type CamelCase<S extends string> = S extends `${infer A}_${infer B}`
   ? `${A}${Capitalize<CamelCase<B>>}`
   : S;

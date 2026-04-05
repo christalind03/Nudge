@@ -23,26 +23,27 @@ export function BlockForm({ onSubmit }: Props) {
   });
 
   async function handleSubmit(formData: FormSchema) {
-    if (!isFormBlock(formData)) {
-      return;
-    }
+    try {
+      if (!isFormBlock(formData)) {
+        return;
+      }
 
-    const queryResult = await window.databaseAPI.insertBlock(formData);
-    if (queryResult.success) {
+      const queryResult = await window.databaseAPI.insertBlock(formData);
+      if (queryResult) {
+        toast({
+          toastTitle: `Block "${formData.name}" Created`,
+          toastVariant: 'success',
+        });
+
+        onSubmit();
+      }
+    } catch (errorObj) {
       toast({
-        toastTitle: `Block "${formData.name}" Created`,
-        toastVariant: 'success',
+        toastDescription: errorObj.message,
+        toastTitle: 'Block Creation Failed',
+        toastVariant: 'error',
       });
-
-      onSubmit();
-      return;
     }
-
-    toast({
-      toastDescription: queryResult.message,
-      toastTitle: 'Block Creation Failed',
-      toastVariant: 'error',
-    });
   }
 
   return (
