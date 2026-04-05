@@ -1,3 +1,4 @@
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 import { createMemoryRouter, RouterProvider } from 'react-router-dom';
@@ -34,11 +35,15 @@ const memoryRouter = createMemoryRouter([
   },
 ]);
 
+const queryClient = new QueryClient();
+
 function App() {
   return (
     <StrictMode>
-      <RouterProvider router={memoryRouter} />
-      <Toaster />
+      <QueryClientProvider client={queryClient}>
+        <RouterProvider router={memoryRouter} />
+        <Toaster />
+      </QueryClientProvider>
     </StrictMode>
   );
 }

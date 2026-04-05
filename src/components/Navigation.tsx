@@ -1,3 +1,4 @@
+import { useQuery } from '@tanstack/react-query';
 import {
   Bell,
   LayoutGrid,
@@ -7,8 +8,10 @@ import {
 } from 'lucide-react';
 import { useState } from 'react';
 
+import { Error } from '@/components/Error';
 import { BlockForm } from '@/components/forms/BlockForm';
 import { ReminderForm } from '@/components/forms/ReminderForm';
+import { Loading } from '@/components/Loading';
 import { NavigationRoute } from '@/components/NavigationRoute';
 import {
   Dialog,
@@ -33,6 +36,14 @@ import {
 
 export function Navigation() {
   const [dialogOpen, setDialogOpen] = useState(false);
+  const {
+    data: blockData,
+    error: blockError,
+    isPending: blockPending,
+  } = useQuery({
+    queryFn: () => window.databaseAPI.readBlocks(),
+    queryKey: ['blockData'],
+  });
 
   return (
     <Sidebar>
@@ -82,17 +93,28 @@ export function Navigation() {
             </DialogContent>
           </Dialog>
           <SidebarGroupContent className="flex flex-col min-h-0">
-            <SidebarMenu className="border-l-2 border-solid flex flex-col min-h-0 ml-2.5 pl-1">
-              <ScrollArea className="h-full" scrollHideDelay={0}>
-                {Array.from({ length: 50 }, (_, arrayIndex) => (
-                  <NavigationRoute
-                    key={arrayIndex}
-                    menuLabel={`Block ${arrayIndex}`}
-                    navigationPath={`/blocks/${arrayIndex}`}
-                  />
-                ))}
-              </ScrollArea>
-            </SidebarMenu>
+            {blockData && (
+              <SidebarMenu className="border-l-2 border-solid flex flex-col min-h-0 ml-2.5 pl-1">
+                <ScrollArea className="h-full" scrollHideDelay={0}>
+                  {blockData.map(({ id, name }) => (
+                    <NavigationRoute
+                      key={id}
+                      menuLabel={name}
+                      navigationPath={`/blocks/${name}`}
+                    />
+                  ))}
+                </ScrollArea>
+              </SidebarMenu>
+            )}
+            {blockError && (
+              <Error
+                errorDescription={blockError.message}
+                errorTitle="Failed to Load Time Blocks"
+                iconClass="size-3"
+                textClass="text-xs"
+              />
+            )}
+            {blockPending && <Loading />}
           </SidebarGroupContent>
         </SidebarGroup>
       </SidebarContent>
