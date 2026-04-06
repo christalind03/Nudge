@@ -1,7 +1,9 @@
 import { zodResolver } from '@hookform/resolvers/zod';
+import { useQuery } from '@tanstack/react-query';
 import { ComponentProps, useCallback } from 'react';
 import { FormProvider, useForm, useWatch } from 'react-hook-form';
 
+import { Error } from '@/components/Error';
 import { FormDialog } from '@/components/forms/FormDialog';
 import {
   formSchema,
@@ -11,8 +13,11 @@ import {
 import { ReminderOnce } from '@/components/forms/ReminderForm/ReminderOnce';
 import { ReminderRepeat } from '@/components/forms/ReminderForm/ReminderRepeat';
 import { InputField } from '@/components/forms/ui/InputField';
+import { SelectField } from '@/components/forms/ui/SelectField';
+import { Loading } from '@/components/Loading';
 import { Button } from '@/components/ui/Button';
 import { Dialog } from '@/components/ui/Dialog';
+import { SelectItem } from '@/components/ui/Select';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/Tabs';
 
 type Props = {
@@ -29,6 +34,15 @@ export function ReminderForm({ dialogProps, formProps: { onSubmit } }: Props) {
       ...reminderDefaults.reminderOnce,
     },
     resolver: zodResolver(formSchema),
+  });
+
+  const {
+    data: blockData,
+    error: blockError,
+    isPending: blockPending,
+  } = useQuery({
+    queryFn: () => window.databaseAPI.readBlocks(),
+    queryKey: ['blockData'],
   });
 
   const changeTab = useCallback(
@@ -51,6 +65,27 @@ export function ReminderForm({ dialogProps, formProps: { onSubmit } }: Props) {
     name: 'reminderType',
   });
 
+  if (blockPending) {
+    return (
+      <div className="m-5">
+        <Loading />
+      </div>
+    );
+  }
+
+  if (blockError || !blockData) {
+    return (
+      <div className="m-5">
+        <Error
+          errorDescription={
+            blockError?.message || 'An unexpected error has occurred'
+          }
+          errorTitle="Unable to Load Block References"
+        />
+      </div>
+    );
+  }
+
   return (
     <FormDialog
       {...dialogProps}
@@ -67,6 +102,27 @@ export function ReminderForm({ dialogProps, formProps: { onSubmit } }: Props) {
             fieldLabel="Label"
             fieldName="label"
             placeholder="e.g. Morning Focus Session"
+          />
+          <SelectField
+            fieldLabel="Block"
+            fieldName="blockReference"
+            fieldOptional
+            renderOptions={() => {
+              if (0 < blockData.length) {
+                blockData.map(({ id, name }) => (
+                  <SelectItem key={id} value={id}>
+                    {name}
+                  </SelectItem>
+                ));
+              }
+
+              return (
+                <div className="p-3 text-center text-muted-foreground text-sm">
+                  No Blocks Available
+                </div>
+              );
+            }}
+            selectPlaceholder="Select Block"
           />
           <Tabs onValueChange={changeTab} value={reminderType}>
             <TabsList className="w-full">

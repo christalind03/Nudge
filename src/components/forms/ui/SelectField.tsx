@@ -1,23 +1,29 @@
-import { ComponentProps } from 'react';
+import { ReactElement } from 'react';
 import { Controller, FieldValues, Path, useFormContext } from 'react-hook-form';
 
-import { Field, FieldError, FieldLabel } from '@/components/ui/Field';
-import { Input } from '@/components/ui/Input';
+import { Field, FieldLabel } from '@/components/ui/Field';
+import {
+  Select,
+  SelectContent,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/Select';
 import { cn } from '@/lib/utils';
 
-type Props<TFieldValues extends FieldValues> = ComponentProps<typeof Input> & {
-  className?: string;
+type Props<TFieldValues extends FieldValues> = {
   fieldLabel?: string;
   fieldName: Path<TFieldValues>;
   fieldOptional?: boolean;
+  renderOptions: () => ReactElement | ReactElement[];
+  selectPlaceholder?: string;
 };
 
-export function InputField<TFieldValues extends FieldValues>({
-  className,
+export function SelectField<TFieldValues extends FieldValues>({
   fieldLabel,
   fieldName,
   fieldOptional = false,
-  ...inputProps
+  renderOptions,
+  selectPlaceholder,
 }: Props<TFieldValues>) {
   const formHandler = useFormContext<TFieldValues>();
 
@@ -26,7 +32,7 @@ export function InputField<TFieldValues extends FieldValues>({
       control={formHandler.control}
       name={fieldName}
       render={({ field, fieldState }) => (
-        <Field aria-invalid={fieldState.invalid} className={className}>
+        <Field aria-invalid={fieldState.invalid}>
           {fieldLabel && (
             <FieldLabel
               className={cn(fieldState.invalid && 'text-destructive')}
@@ -40,17 +46,12 @@ export function InputField<TFieldValues extends FieldValues>({
               )}
             </FieldLabel>
           )}
-          <Input
-            {...field}
-            {...inputProps}
-            aria-invalid={fieldState.invalid}
-            id={field.name}
-            onChange={(changeEvent) => {
-              field.onChange(changeEvent);
-              inputProps.onChange?.(changeEvent);
-            }}
-          />
-          {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+          <Select {...field}>
+            <SelectContent position="popper">{renderOptions()}</SelectContent>
+            <SelectTrigger>
+              <SelectValue placeholder={selectPlaceholder ?? '---'} />
+            </SelectTrigger>
+          </Select>
         </Field>
       )}
     />

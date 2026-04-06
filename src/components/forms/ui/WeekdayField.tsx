@@ -12,14 +12,15 @@ import { cn } from '@/lib/utils';
 const DAY_LABELS = ['S', 'M', 'T', 'W', 'T', 'F', 'S'] as const;
 
 type Props<TFieldValues extends FieldValues> = {
-  className?: string;
   fieldLabel?: string;
   fieldName: FieldPathByValue<TFieldValues, number[]>;
+  fieldOptional?: boolean;
 };
 
 export function WeekdayField<TFieldValues extends FieldValues>({
   fieldLabel,
   fieldName,
+  fieldOptional = false,
 }: Props<TFieldValues>) {
   const formHandler = useFormContext<TFieldValues>();
 
@@ -32,8 +33,14 @@ export function WeekdayField<TFieldValues extends FieldValues>({
           {fieldLabel && (
             <FieldLabel
               className={cn(fieldState.invalid && 'text-destructive')}
+              htmlFor={field.name}
             >
               {fieldLabel}
+              {fieldOptional && (
+                <span className="text-muted-foreground text-xs">
+                  (optional)
+                </span>
+              )}
             </FieldLabel>
           )}
           <div className="flex gap-1.5 justify-between">

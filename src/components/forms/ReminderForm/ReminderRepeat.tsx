@@ -47,7 +47,12 @@ export function ReminderRepeat() {
     <Fragment>
       <Divider dividerLabel="WHEN" />
       <DateField fieldLabel="Start Date" fieldName="reminderData.dateStart" />
-      <DateField fieldLabel="End Date" fieldName="reminderData.dateEnd" />
+      <DateField
+        canReset
+        fieldLabel="End Date"
+        fieldName="reminderData.dateEnd"
+        fieldOptional
+      />
       <Divider dividerLabel="FREQUENCY" />
       <Field>
         <FieldLabel htmlFor="selectFrequency">Run</FieldLabel>

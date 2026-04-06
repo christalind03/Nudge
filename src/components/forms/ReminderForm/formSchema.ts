@@ -163,6 +163,10 @@ const reminderSchema = z.discriminatedUnion('reminderType', [
 
 export const formSchema = z
   .object({
+    blockReference: z
+      .string()
+      .nonempty({ message: REQUIRED_MESSAGE })
+      .optional(),
     label: z.string().nonempty({ message: REQUIRED_MESSAGE }),
   })
   .and(reminderSchema);

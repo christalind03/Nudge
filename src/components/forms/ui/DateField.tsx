@@ -18,12 +18,14 @@ type Props<TFieldValues extends FieldValues> = {
   className?: string;
   fieldLabel?: string;
   fieldName: Path<TFieldValues>;
+  fieldOptional?: boolean;
 };
 
 export function DateField<TFieldValues extends FieldValues>({
-  canReset,
+  canReset = false,
   fieldLabel,
   fieldName,
+  fieldOptional = false,
 }: Props<TFieldValues>) {
   const formHandler = useFormContext<TFieldValues>();
   const [isOpen, setIsOpen] = useState(false);
@@ -40,6 +42,11 @@ export function DateField<TFieldValues extends FieldValues>({
               htmlFor={field.name}
             >
               {fieldLabel}
+              {fieldOptional && (
+                <span className="text-muted-foreground text-xs">
+                  (optional)
+                </span>
+              )}
             </FieldLabel>
           )}
           <Popover onOpenChange={setIsOpen} open={isOpen}>

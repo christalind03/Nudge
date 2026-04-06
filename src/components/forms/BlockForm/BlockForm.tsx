@@ -28,7 +28,6 @@ export function BlockForm({
   dialogProps,
   formProps: { blockData, onSubmit },
 }: Props) {
-  console.log(blockData);
   const formHandler = useForm<FormSchema>({
     defaultValues: blockData ?? defaultSchema,
     resolver: zodResolver(formSchema),

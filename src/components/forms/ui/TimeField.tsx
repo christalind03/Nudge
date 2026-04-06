@@ -3,10 +3,12 @@ import { FieldValues, Path, useFormContext, useWatch } from 'react-hook-form';
 
 import { Field, FieldError, FieldLabel } from '@/components/ui/Field';
 import { Input } from '@/components/ui/Input';
+import { cn } from '@/lib/utils';
 
 type Props<TFieldValues extends FieldValues> = {
   className?: string;
   fieldLabel?: string;
+  fieldOptional?: boolean;
   hoursField: Path<TFieldValues>;
   minutesField: Path<TFieldValues>;
 };
@@ -14,6 +16,7 @@ type Props<TFieldValues extends FieldValues> = {
 export function TimeField<TFieldValues extends FieldValues>({
   className,
   fieldLabel,
+  fieldOptional = false,
   hoursField,
   minutesField,
 }: Props<TFieldValues>) {
@@ -61,7 +64,17 @@ export function TimeField<TFieldValues extends FieldValues>({
 
   return (
     <Field aria-invalid={isInvalid} className={className}>
-      {fieldLabel && <FieldLabel htmlFor={hoursField}>{fieldLabel}</FieldLabel>}
+      {fieldLabel && (
+        <FieldLabel
+          className={cn(isInvalid && 'text-destructive')}
+          htmlFor={hoursField}
+        >
+          {fieldLabel}
+          {fieldOptional && (
+            <span className="text-muted-foreground text-xs">(optional)</span>
+          )}
+        </FieldLabel>
+      )}
       <Input
         aria-invalid={isInvalid}
         id={hoursField}

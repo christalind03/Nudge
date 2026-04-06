@@ -2,11 +2,13 @@ import { Controller, FieldValues, Path, useFormContext } from 'react-hook-form';
 
 import { Field, FieldError, FieldLabel } from '@/components/ui/Field';
 import { Input } from '@/components/ui/Input';
+import { cn } from '@/lib/utils';
 
 type Props<TFieldValues extends FieldValues> = {
   className?: string;
   fieldLabel?: string;
   fieldName: Path<TFieldValues>;
+  fieldOptional?: boolean;
   maxValue: number;
   minValue: number;
 };
@@ -15,6 +17,7 @@ export function NumberField<TFieldValues extends FieldValues>({
   className,
   fieldLabel,
   fieldName,
+  fieldOptional = false,
   maxValue,
   minValue,
 }: Props<TFieldValues>) {
@@ -27,7 +30,17 @@ export function NumberField<TFieldValues extends FieldValues>({
       render={({ field, fieldState }) => (
         <Field aria-invalid={fieldState.invalid} className={className}>
           {fieldLabel && (
-            <FieldLabel htmlFor={field.name}>{fieldLabel}</FieldLabel>
+            <FieldLabel
+              className={cn(fieldState.invalid && 'text-destructive')}
+              htmlFor={field.name}
+            >
+              {fieldLabel}
+              {fieldOptional && (
+                <span className="text-muted-foreground text-xs">
+                  (optional)
+                </span>
+              )}
+            </FieldLabel>
           )}
           <Input
             {...field}
