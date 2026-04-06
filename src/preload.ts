@@ -9,7 +9,7 @@ const databaseAPI = {
     ipcRenderer.invoke('blocks:insert', blockData),
   readBlock: (blockID: string) => ipcRenderer.invoke('blocks:read', blockID),
   readBlocks: () => ipcRenderer.invoke('blocks:readAll'),
-  updateBlocks: (blockID: string, blockData: FormBlock) =>
+  updateBlock: (blockID: string, blockData: FormBlock) =>
     ipcRenderer.invoke('blocks:update', blockID, blockData),
 };
 

@@ -38,17 +38,15 @@ export function WeekdayField<TFieldValues extends FieldValues>({
           )}
           <div className="flex gap-1.5 justify-between">
             {DAY_LABELS.map((dayLabel, dayIndex) => {
-              const isPressed = field.value.includes(dayIndex);
+              const isActive = field.value.includes(dayIndex);
 
               return (
                 <Button
                   aria-label={dayLabel}
-                  aria-pressed={isPressed}
+                  aria-pressed={isActive}
                   className="aspect-square px-0 rounded-full text-center hover:cursor-pointer"
                   key={dayIndex}
                   onClick={() => {
-                    const isActive = field.value.includes(dayIndex);
-
                     formHandler.setValue(
                       field.name,
                       isActive
@@ -60,7 +58,7 @@ export function WeekdayField<TFieldValues extends FieldValues>({
                   }}
                   size="sm"
                   type="button"
-                  variant={isPressed ? 'default' : 'outline'}
+                  variant={isActive ? 'default' : 'outline'}
                 >
                   {dayLabel}
                 </Button>

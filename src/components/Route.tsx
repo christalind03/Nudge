@@ -1,17 +1,23 @@
 import { LucideIcon } from 'lucide-react';
-import { useMemo } from 'react';
+import { ReactNode, useMemo } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 
-import { SidebarMenuButton, SidebarMenuItem } from '@/components/ui/Sidebar';
+import {
+  SidebarMenuAction,
+  SidebarMenuButton,
+  SidebarMenuItem,
+} from '@/components/ui/Sidebar';
 import { cn } from '@/lib/utils';
 
 type Props = {
+  menuAction?: ReactNode;
   menuIcon?: LucideIcon;
   menuLabel: string;
   navigationPath: string;
 };
 
-export function NavigationRoute({
+export function Route({
+  menuAction: MenuAction,
   menuIcon: MenuIcon,
   menuLabel,
   navigationPath,
@@ -25,6 +31,7 @@ export function NavigationRoute({
 
   return (
     <SidebarMenuItem>
+      {MenuAction && <SidebarMenuAction>{MenuAction}</SidebarMenuAction>}
       <SidebarMenuButton
         asChild
         className={cn(
