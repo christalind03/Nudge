@@ -8,18 +8,11 @@ import {
 } from 'lucide-react';
 import { useState } from 'react';
 
+import { BlockRoute } from '@/components/BlockRoute';
 import { Error } from '@/components/Error';
 import { BlockForm } from '@/components/forms/BlockForm';
-import { ReminderForm } from '@/components/forms/ReminderForm';
 import { Loading } from '@/components/Loading';
-import { NavigationRoute } from '@/components/NavigationRoute';
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-} from '@/components/ui/Dialog';
+import { Route } from '@/components/Route';
 import { ScrollArea } from '@/components/ui/ScrollArea';
 import { Separator } from '@/components/ui/Separator';
 import {
@@ -59,12 +52,12 @@ export function Navigation() {
       <Separator />
       <SidebarContent>
         <SidebarMenu className="p-1">
-          <NavigationRoute
+          <Route
             menuIcon={LayoutGrid}
             menuLabel="Dashboard"
             navigationPath="/"
           />
-          <NavigationRoute
+          <Route
             menuIcon={Bell}
             menuLabel="Reminders"
             navigationPath="/reminders"
@@ -79,29 +72,21 @@ export function Navigation() {
           >
             <Plus className="size-3 text-accent-foreground" />
           </SidebarGroupAction>
-          <Dialog onOpenChange={setDialogOpen} open={dialogOpen}>
-            <DialogContent>
-              <DialogHeader>
-                <DialogTitle>Create Reminder Block</DialogTitle>
-                <DialogDescription>
-                  Configure a schedule and time window for certain reminders.
-                </DialogDescription>
-              </DialogHeader>
-              <Separator />
-              <BlockForm onSubmit={() => setDialogOpen(false)} />
-              {/*<ReminderForm onSubmit={() => setDialogOpen(false)} />*/}
-            </DialogContent>
-          </Dialog>
+          <BlockForm
+            dialogProps={{
+              onOpenChange: (openState) => setDialogOpen(openState),
+              open: dialogOpen,
+            }}
+            formProps={{
+              onSubmit: () => setDialogOpen(false),
+            }}
+          />
           <SidebarGroupContent className="flex flex-col min-h-0">
             {blockData && (
               <SidebarMenu className="border-l-2 border-solid flex flex-col min-h-0 ml-2.5 pl-1">
                 <ScrollArea className="h-full" scrollHideDelay={0}>
-                  {blockData.map(({ id, name }) => (
-                    <NavigationRoute
-                      key={id}
-                      menuLabel={name}
-                      navigationPath={`/blocks/${name}`}
-                    />
+                  {blockData.map((blockData) => (
+                    <BlockRoute blockData={blockData} key={blockData.id} />
                   ))}
                 </ScrollArea>
               </SidebarMenu>
@@ -120,7 +105,7 @@ export function Navigation() {
       </SidebarContent>
       <SidebarFooter>
         <SidebarMenu>
-          <NavigationRoute
+          <Route
             menuIcon={Settings}
             menuLabel="Settings"
             navigationPath="/settings"

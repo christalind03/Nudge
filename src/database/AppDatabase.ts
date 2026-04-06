@@ -54,14 +54,11 @@ class AppDatabase {
       .get(blockID) as DatabaseBlock;
 
     if (databaseBlock) {
-      const { active_days, id, name, time_end, time_start } = databaseBlock;
+      const { active_days } = databaseBlock;
 
       return {
-        activeDays: active_days,
-        id,
-        name,
-        timeEnd: time_end,
-        timeStart: time_start,
+        ...toCamelCase(databaseBlock),
+        activeDays: JSON.parse(active_days),
       } as Block;
     }
 
@@ -73,7 +70,14 @@ class AppDatabase {
       .prepare('SELECT * FROM blocks')
       .all() as DatabaseBlock[];
 
-    return databaseBlocks.map(toCamelCase) as Block[];
+    return databaseBlocks.map((databaseBlock) => {
+      const { active_days } = databaseBlock;
+
+      return {
+        ...toCamelCase(databaseBlock),
+        activeDays: JSON.parse(active_days),
+      };
+    }) as Block[];
   }
 
   public updateBlock(blockID: string, blockData: FormBlock) {
@@ -86,7 +90,7 @@ class AppDatabase {
       )
       .run(
         blockData.name,
-        blockData.activeDays,
+        JSON.stringify(blockData.activeDays),
         blockData.timeStart,
         blockData.timeEnd,
         blockID
