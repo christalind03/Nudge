@@ -1,7 +1,8 @@
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useCallback } from 'react';
+import { ComponentProps, useCallback } from 'react';
 import { FormProvider, useForm, useWatch } from 'react-hook-form';
 
+import { FormDialog } from '@/components/forms/FormDialog';
 import {
   formSchema,
   FormSchema,
@@ -11,13 +12,17 @@ import { ReminderOnce } from '@/components/forms/ReminderForm/ReminderOnce';
 import { ReminderRepeat } from '@/components/forms/ReminderForm/ReminderRepeat';
 import { InputField } from '@/components/forms/ui/InputField';
 import { Button } from '@/components/ui/Button';
+import { Dialog } from '@/components/ui/Dialog';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/Tabs';
 
 type Props = {
-  onSubmit: () => void;
+  dialogProps?: ComponentProps<typeof Dialog>;
+  formProps: {
+    onSubmit?: () => void;
+  };
 };
 
-export function ReminderForm({ onSubmit }: Props) {
+export function ReminderForm({ dialogProps, formProps: { onSubmit } }: Props) {
   const formHandler = useForm<FormSchema>({
     defaultValues: {
       label: '',
@@ -37,10 +42,7 @@ export function ReminderForm({ onSubmit }: Props) {
   );
 
   const handleSubmit = useCallback(
-    (formData: FormSchema) => {
-      console.log(formData);
-      // onSubmit();
-    },
+    (formData: FormSchema) => console.log(formData),
     [onSubmit]
   );
 
@@ -50,37 +52,43 @@ export function ReminderForm({ onSubmit }: Props) {
   });
 
   return (
-    <form
-      className="space-y-3"
-      onSubmit={formHandler.handleSubmit(handleSubmit)}
+    <FormDialog
+      {...dialogProps}
+      dialogDescription="Configure when this reminder is triggered."
+      dialogTitle="Create Reminder"
     >
       <FormProvider {...formHandler}>
-        <InputField
-          autoComplete="off"
-          fieldLabel="Label"
-          fieldName="label"
-          placeholder="e.g. Morning Focus Session"
-        />
-        <Tabs onValueChange={changeTab} value={reminderType}>
-          <TabsList className="w-full">
-            <TabsTrigger value="reminderOnce">Fixed</TabsTrigger>
-            <TabsTrigger value="reminderRepeat">Recurring</TabsTrigger>
-          </TabsList>
-          <TabsContent className="flex flex-col gap-3" value="reminderOnce">
-            <ReminderOnce />
-          </TabsContent>
-          <TabsContent className="flex flex-col gap-3" value="reminderRepeat">
-            <ReminderRepeat />
-          </TabsContent>
-        </Tabs>
-        <Button
-          className="cursor-pointer w-full"
-          onClick={() => console.log(formHandler.getValues())}
-          type="submit"
+        <form
+          className="space-y-3"
+          onSubmit={formHandler.handleSubmit(handleSubmit)}
         >
-          Submit
-        </Button>
+          <InputField
+            autoComplete="off"
+            fieldLabel="Label"
+            fieldName="label"
+            placeholder="e.g. Morning Focus Session"
+          />
+          <Tabs onValueChange={changeTab} value={reminderType}>
+            <TabsList className="w-full">
+              <TabsTrigger value="reminderOnce">Fixed</TabsTrigger>
+              <TabsTrigger value="reminderRepeat">Recurring</TabsTrigger>
+            </TabsList>
+            <TabsContent className="flex flex-col gap-3" value="reminderOnce">
+              <ReminderOnce />
+            </TabsContent>
+            <TabsContent className="flex flex-col gap-3" value="reminderRepeat">
+              <ReminderRepeat />
+            </TabsContent>
+          </Tabs>
+          <Button
+            className="cursor-pointer w-full"
+            onClick={() => console.log(formHandler.getValues())}
+            type="submit"
+          >
+            Submit
+          </Button>
+        </form>
       </FormProvider>
-    </form>
+    </FormDialog>
   );
 }

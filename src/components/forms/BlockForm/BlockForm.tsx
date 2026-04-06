@@ -63,7 +63,7 @@ export function BlockForm({
         });
       }
     },
-    [editMode, queryClient]
+    [editMode, onSubmit, queryClient]
   );
 
   return (

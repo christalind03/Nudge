@@ -7,7 +7,7 @@ export function Layout() {
   return (
     <SidebarProvider>
       <Navigation />
-      <main>
+      <main className="size-full">
         <SidebarTrigger className="md:hidden" />
         <Outlet />
       </main>

@@ -1,3 +1,12 @@
+import { Fragment } from 'react';
+
+import { RouteHeader } from '@/components/RouteHeader';
+
 export function Settings() {
-  return <div>Settings</div>;
+  return (
+    <Fragment>
+      <RouteHeader displayCreateButton={false} routeLabel="Settings" />
+      <div>Settings</div>
+    </Fragment>
+  );
 }
